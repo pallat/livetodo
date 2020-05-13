@@ -11,9 +11,10 @@ func Bind(r *http.Request) func(interface{}) error {
 	}
 }
 
-func Json(w http.ResponseWriter) func(interface{}) error {
-	w.Header().Set("Content-type", "application/json")
-	return func(v interface{}) error {
+func Json(w http.ResponseWriter) func(int, interface{}) error {
+	return func(code int, v interface{}) error {
+		w.Header().Add("Content-type", "application/json")
+		w.WriteHeader(code)
 		return json.NewEncoder(w).Encode(v)
 	}
 }

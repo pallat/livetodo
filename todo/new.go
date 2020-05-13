@@ -35,21 +35,23 @@ func NewTaskHandler(insert insertTaskFunc) http.HandlerFunc {
 		var task Task
 
 		if err := jsonify.Bind(r)(&task); err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			jsonify.Json(w)(map[string]string{
-				"error": err.Error(),
-			})
+			jsonify.Json(w)(
+				http.StatusBadRequest,
+				map[string]string{
+					"error": err.Error(),
+				})
 			return
 		}
 
 		if err := insert(task.Title); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			jsonify.Json(w)(map[string]string{
-				"error": err.Error(),
-			})
+			jsonify.Json(w)(
+				http.StatusInternalServerError,
+				map[string]string{
+					"error": err.Error(),
+				})
 			return
 		}
 
-		jsonify.Json(w)(struct{}{})
+		jsonify.Json(w)(http.StatusOK, struct{}{})
 	}
 }

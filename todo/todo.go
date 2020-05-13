@@ -43,15 +43,18 @@ func TaskHandler(all findAllFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tasks, err := all()
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			jsonify.Json(w)(map[string]string{
-				"error": err.Error(),
-			})
+			jsonify.Json(w)(
+				http.StatusInternalServerError,
+				map[string]string{
+					"error": err.Error(),
+				})
 			return
 		}
 
-		jsonify.Json(w)(map[string]interface{}{
-			"todos": tasks,
-		})
+		jsonify.Json(w)(
+			http.StatusOK,
+			map[string]interface{}{
+				"todos": tasks,
+			})
 	}
 }
